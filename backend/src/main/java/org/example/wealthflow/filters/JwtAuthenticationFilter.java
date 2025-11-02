@@ -14,8 +14,6 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenService jwtTokenService;
-    private final String header = "Authorization";
-    private final String prefix = "Bearer ";
 
     public JwtAuthenticationFilter(JwtTokenService tokenService) {
         this.jwtTokenService = tokenService;
@@ -25,7 +23,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
+        String header = "Authorization";
         String auth = request.getHeader(header);
+        String prefix = "Bearer ";
         if (auth != null && auth.startsWith(prefix)) {
             String token = auth.substring(prefix.length());
             try {
