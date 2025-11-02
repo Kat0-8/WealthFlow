@@ -18,6 +18,7 @@ import java.time.Instant;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class JwtTokenService {
@@ -63,6 +64,7 @@ public class JwtTokenService {
                 .claim("role", role)
                 .setIssuedAt(issuedAt)
                 .setExpiration(expireAt)
+                .setId(UUID.randomUUID().toString())
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
