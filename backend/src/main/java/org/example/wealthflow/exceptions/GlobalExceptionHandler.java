@@ -58,7 +58,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .collect(Collectors.toMap(
                         FieldError::getField,
                         fe -> fe.getDefaultMessage() == null ? "invalid" : fe.getDefaultMessage(),
-                        (existing, replacement) -> existing // keep first if duplicates
+                        (existing, replacement) -> existing
                 ));
 
         String summary = fieldErrors.entrySet().stream()
