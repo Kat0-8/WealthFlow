@@ -50,7 +50,6 @@ public class AuthService {
     public UserResponseDto register(UserRequestDto dto) {
         validateRegistrationDto(dto);
 
-        // normalize
         dto.setLogin(dto.getLogin().trim());
         dto.setEmail(dto.getEmail().trim().toLowerCase());
         dto.setRole(User.Role.USER);
@@ -71,14 +70,7 @@ public class AuthService {
     public AuthRegisterResponseDto registerAndLogin(UserRequestDto dto) {
         UserResponseDto created = register(dto);
 
-        String token = jwtTokenService.generateToken(created.getId(), created.getRole().name());
-        long expiresIn = jwtTokenService.getExpirationSeconds();
-
-        AuthResponseDto auth = AuthResponseDto.builder()
-                .accessToken(token)
-                .tokenType(TOKEN_TYPE)
-                .expiresIn(expiresIn)
-                .build();
+        AuthResponseDto auth = createAuthResponse(created.getId(), created.getRole().toString());
 
         return AuthRegisterResponseDto.builder()
                 .user(created)
@@ -119,15 +111,8 @@ public class AuthService {
             throw new UnauthorizedException("Invalid credentials");
         }
 
-        String token = jwtTokenService.generateToken(user.getId(), user.getRole().name());
-        long expiresIn = jwtTokenService.getExpirationSeconds();
-
         log.info("User logged in: id={}, login={}", user.getId(), user.getLogin());
-        return AuthResponseDto.builder()
-                .accessToken(token)
-                .tokenType(TOKEN_TYPE)
-                .expiresIn(expiresIn)
-                .build();
+        return createAuthResponse(user.getId(),user.getRole().toString());
     }
 
     private void validateRegistrationDto(UserRequestDto dto) {
@@ -136,5 +121,15 @@ public class AuthService {
         if (dto.getEmail() == null || dto.getEmail().isBlank()) throw new BadRequestException("Email is required");
         if (dto.getPassword() == null || dto.getPassword().length() < MIN_PASSWORD_LENGTH)
             throw new BadRequestException("Password must be at least " + MIN_PASSWORD_LENGTH + " characters");
+    }
+
+    private AuthResponseDto createAuthResponse(Long userId, String userRole) {
+        String token = jwtTokenService.generateToken(userId, userRole);
+        long expiresIn = jwtTokenService.getExpirationSeconds();
+        return AuthResponseDto.builder()
+                .accessToken(token)
+                .tokenType(TOKEN_TYPE)
+                .expiresIn(expiresIn)
+                .build();
     }
 }
