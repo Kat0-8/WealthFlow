@@ -2,6 +2,7 @@ package org.example.wealthflow.configs;
 
 import lombok.RequiredArgsConstructor;
 import org.example.wealthflow.filters.JwtAuthenticationFilter;
+import org.example.wealthflow.security.JwtAuthenticationEntryPoint;
 import org.example.wealthflow.services.JwtTokenService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,10 +21,11 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final JwtTokenService jwtTokenService;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter(jwtTokenService);
+        return new JwtAuthenticationFilter(jwtTokenService, jwtAuthenticationEntryPoint);
     }
 
     @Bean
@@ -37,8 +39,9 @@ public class SecurityConfig {
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
+                .exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .addFilterBefore(jwtAuthenticationFilter(), org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class)
-                .httpBasic(Customizer.withDefaults()); // optional
+                .httpBasic(Customizer.withDefaults());
 
         return http.build();
     }
