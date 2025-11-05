@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.jooq.impl.DSL.field;
+import static org.jooq.impl.DSL.name;
+import static org.jooq.impl.DSL.notExists;
+import static org.jooq.impl.DSL.selectOne;
 import static org.jooq.impl.DSL.table;
 import org.jooq.Record;
 
@@ -136,6 +139,16 @@ public class UserRepository {
         return dsl.selectFrom(USERS)
                 .where(IS_DELETED.eq(false))
                 .fetch(this::mapUser);
+    }
+
+    public boolean updateLoginIfAvailable(Long userId, String newLogin) {
+        return (dsl.update(USERS)
+                .set(LOGIN, newLogin)
+                .where(ID.eq(userId)
+                        .and(notExists(selectOne().from(USERS.as("user_2")).where(field(name("user_2", "login"), String.class).eq(newLogin))))
+                )
+                .execute()) > 0;
+
     }
 
     private User mapUser(Record record) {
