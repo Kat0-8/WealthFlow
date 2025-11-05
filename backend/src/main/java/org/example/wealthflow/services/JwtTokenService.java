@@ -52,8 +52,8 @@ public class JwtTokenService {
         }
 
         this.key = Keys.hmacShaKeyFor(keyBytes);
-        this.expirationSeconds = jwtTokenConfig.getAccessTokenExpirationSes();
-        this.clockSkewSeconds = jwtTokenConfig.getClockSkewSec();
+        this.expirationSeconds = jwtTokenConfig.getExpirationSeconds();
+        this.clockSkewSeconds = jwtTokenConfig.getClockSkewSeconds();
     }
 
     public String generateToken(Long userId, String role) {
