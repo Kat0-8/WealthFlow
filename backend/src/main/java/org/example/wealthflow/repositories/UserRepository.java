@@ -1,6 +1,5 @@
 package org.example.wealthflow.repositories;
 
-import jakarta.persistence.EnumType;
 import lombok.RequiredArgsConstructor;
 import org.example.wealthflow.models.User;
 import org.jooq.DSLContext;
@@ -21,7 +20,7 @@ import org.jooq.Record;
 @Repository
 @RequiredArgsConstructor
 public class UserRepository {
-    private final DSLContext dsl;
+    private final DSLContext dslContext;
 
     private final Table<?> USERS = table("users");
     private final Field<Long> ID = field("id", Long.class);
@@ -34,38 +33,38 @@ public class UserRepository {
     private final Field<Boolean> IS_DELETED = field("is_deleted", Boolean.class);
 
     public Optional<User> findById(Long id) {
-        return dsl.selectFrom(USERS)
+        return dslContext.selectFrom(USERS)
                 .where(ID.eq(id))
-                .fetchOptional(this::mapUser);
+                .fetchOptional(this::mapRecordToUser);
     }
 
     public Optional<User> findByLogin(String login) {
-        return dsl.selectFrom(USERS)
+        return dslContext.selectFrom(USERS)
                 .where(LOGIN.eq(login))
-                .fetchOptional(this::mapUser);
+                .fetchOptional(this::mapRecordToUser);
     }
 
     public Optional<User> findByEmail(String email) {
-        return dsl.selectFrom(USERS)
+        return dslContext.selectFrom(USERS)
                 .where(EMAIL.eq(email))
-                .fetchOptional(this::mapUser);
+                .fetchOptional(this::mapRecordToUser);
     }
 
     public boolean existsByLogin(String login) {
-        return dsl.fetchExists(
-                dsl.selectFrom(USERS).where(LOGIN.eq(login))
+        return dslContext.fetchExists(
+                dslContext.selectFrom(USERS).where(LOGIN.eq(login))
         );
     }
 
     public boolean existsByEmail(String email) {
-        return dsl.fetchExists(
-                dsl.selectFrom(USERS).where(EMAIL.eq(email))
+        return dslContext.fetchExists(
+                dslContext.selectFrom(USERS).where(EMAIL.eq(email))
         );
     }
 
     public User save(User user) {
         if (user.getId() == null) {
-            Long id = dsl.insertInto(USERS)
+            Long id = dslContext.insertInto(USERS)
                     .set(ROLE, user.getRole().name())
                     .set(LOGIN, user.getLogin())
                     .set(PASSWORD_HASH, user.getPasswordHash())
@@ -77,7 +76,7 @@ public class UserRepository {
                     .fetchOne(ID);
             user.setId(id);
         } else {
-            dsl.update(USERS)
+            dslContext.update(USERS)
                     .set(ROLE, user.getRole().name())
                     .set(LOGIN, user.getLogin())
                     .set(PASSWORD_HASH, user.getPasswordHash())
@@ -92,7 +91,7 @@ public class UserRepository {
     }
 
     public boolean deleteById(Long id) {
-        int deletedRows = dsl.deleteFrom(USERS)
+        int deletedRows = dslContext.deleteFrom(USERS)
                 .where(ID.eq(id))
                 .execute();
         return deletedRows > 0;
@@ -107,7 +106,7 @@ public class UserRepository {
     }
 
     public boolean softDeleteById(Long id) {
-        int softDeletedRows = dsl.update(USERS)
+        int softDeletedRows = dslContext.update(USERS)
                 .set(IS_DELETED, true)
                 .where(ID.eq(id))
                 .execute();
@@ -123,7 +122,7 @@ public class UserRepository {
     }
 
     public boolean restoreById(Long id) {
-        int rows = dsl.update(USERS)
+        int rows = dslContext.update(USERS)
                 .set(IS_DELETED, false)
                 .where(ID.eq(id))
                 .execute();
@@ -131,27 +130,28 @@ public class UserRepository {
     }
 
     public List<User> findAll() {
-        return dsl.selectFrom(USERS)
-                .fetch(this::mapUser);
+        return dslContext.selectFrom(USERS)
+                .fetch(this::mapRecordToUser);
     }
 
     public List<User> findAllActive() {
-        return dsl.selectFrom(USERS)
+        return dslContext.selectFrom(USERS)
                 .where(IS_DELETED.eq(false))
-                .fetch(this::mapUser);
+                .fetch(this::mapRecordToUser);
     }
 
     public boolean updateLoginIfAvailable(Long userId, String newLogin) {
-        return (dsl.update(USERS)
+        return (dslContext.update(USERS)
                 .set(LOGIN, newLogin)
                 .where(ID.eq(userId)
-                        .and(notExists(selectOne().from(USERS.as("user_2")).where(field(name("user_2", "login"), String.class).eq(newLogin))))
+                        .and(notExists(selectOne().from(USERS.as("user_2"))
+                                .where(field(name("user_2", "login"), String.class).eq(newLogin))))
                 )
                 .execute()) > 0;
 
     }
 
-    private User mapUser(Record record) {
+    private User mapRecordToUser(Record record) {
         return User.builder()
                 .id(record.get(ID))
                 .role(User.Role.valueOf(record.get(ROLE)))
