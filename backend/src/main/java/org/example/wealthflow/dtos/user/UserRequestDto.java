@@ -10,7 +10,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.example.wealthflow.models.User;
 
 @Getter
 @Setter
@@ -19,7 +18,7 @@ import org.example.wealthflow.models.User;
 @Builder
 public class UserRequestDto {
     @NotNull(message = "Role is required")
-    private User.Role role;
+    private UserRoleDto role;
 
     @NotBlank(message = "Login cannot be blank")
     @Size(max = 100, message = "Login must be at most 100 characters")

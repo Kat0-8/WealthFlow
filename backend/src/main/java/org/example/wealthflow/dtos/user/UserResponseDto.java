@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.example.wealthflow.models.User;
 
 @Getter
 @Setter
@@ -17,6 +16,6 @@ public class UserResponseDto {
     private String login;
     private String email;
     private String fullName;
-    private User.Role role;
+    private UserRoleDto role;
     private boolean deleted;
 }
