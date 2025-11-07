@@ -3,7 +3,7 @@ package org.example.wealthflow.configs;
 import lombok.RequiredArgsConstructor;
 import org.example.wealthflow.filters.JwtAuthenticationFilter;
 import org.example.wealthflow.security.JwtAuthenticationEntryPoint;
-import org.example.wealthflow.services.JwtTokenService;
+import org.example.wealthflow.auth.services.JwtTokenService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -37,6 +37,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()   
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthenticationEntryPoint))
