@@ -14,7 +14,8 @@ public enum AssetTypeDto {
         try {
             return AssetTypeDto.valueOf(value.trim().toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Type value must be one of " + java.util.Arrays.toString(AssetTypeDto.values()));
+            throw new IllegalArgumentException("Type value must be one of "
+                    + java.util.Arrays.toString(AssetTypeDto.values()));
         }
     }
 
