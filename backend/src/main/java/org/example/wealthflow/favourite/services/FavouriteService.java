@@ -7,7 +7,6 @@ import org.example.wealthflow.common.dtos.PagedResultDto;
 import org.example.wealthflow.favourite.dtos.FavouriteRequestDto;
 import org.example.wealthflow.favourite.dtos.FavouriteResponseDto;
 import org.example.wealthflow.favourite.mappers.FavouriteMapper;
-import org.example.wealthflow.favourite.models.Favourite;
 import org.example.wealthflow.favourite.repositories.FavouriteRepository;
 import org.example.wealthflow.user.repositories.UserRepository;
 import org.example.wealthflow.common.exceptions.BadRequestException;
@@ -16,7 +15,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
