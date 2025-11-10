@@ -1,4 +1,4 @@
-package org.example.wealthflow.filters;
+package org.example.wealthflow.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

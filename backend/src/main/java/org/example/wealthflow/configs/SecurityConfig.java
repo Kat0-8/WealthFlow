@@ -1,7 +1,7 @@
 package org.example.wealthflow.configs;
 
 import lombok.RequiredArgsConstructor;
-import org.example.wealthflow.filters.JwtAuthenticationFilter;
+import org.example.wealthflow.security.JwtAuthenticationFilter;
 import org.example.wealthflow.security.JwtAuthenticationEntryPoint;
 import org.example.wealthflow.auth.services.JwtTokenService;
 import org.springframework.context.annotation.Bean;
