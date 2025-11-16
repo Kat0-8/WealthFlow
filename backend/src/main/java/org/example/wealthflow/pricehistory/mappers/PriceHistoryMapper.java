@@ -8,11 +8,11 @@ import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public abstract class PriceHistoryMapper {
+public interface PriceHistoryMapper {
 
     @Mapping(target = "assetId", source = "asset.id")
-    public abstract PriceHistoryResponseDto toResponse(PriceHistory priceHistory);
+    PriceHistoryResponseDto toResponse(PriceHistory priceHistory);
 
     @Mapping(target = "asset", ignore = true)
-    public abstract PriceHistory toEntity(PriceHistoryRequestDto dto);
+    PriceHistory toEntity(PriceHistoryRequestDto dto);
 }

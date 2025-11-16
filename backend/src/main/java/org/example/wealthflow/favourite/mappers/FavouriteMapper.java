@@ -7,9 +7,9 @@ import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public abstract class FavouriteMapper {
+public interface FavouriteMapper {
 
     @Mapping(target = "userId", source = "user.id")
     @Mapping(target = "assetId", source = "asset.id")
-    public abstract FavouriteResponseDto toResponse(Favourite favourite);
+    FavouriteResponseDto toResponse(Favourite favourite);
 }

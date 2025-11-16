@@ -11,17 +11,17 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public abstract class NotificationRuleMapper {
+public interface NotificationRuleMapper {
 
     @Mapping(target = "userId", source = "user.id")
     @Mapping(target = "assetId", source = "asset.id")
-    public abstract NotificationRuleResponseDto toResponse(NotificationRule entity);
+    NotificationRuleResponseDto toResponse(NotificationRule entity);
 
-    public abstract NotificationRule toEntity(NotificationRuleRequestDto dto);
+    NotificationRule toEntity(NotificationRuleRequestDto dto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "user", ignore = true)
     @Mapping(target = "asset", ignore = true)
-    public abstract void updateFromDto(NotificationRuleRequestDto dto, @MappingTarget NotificationRule entity);
+    void updateFromDto(NotificationRuleRequestDto dto, @MappingTarget NotificationRule entity);
 
 }

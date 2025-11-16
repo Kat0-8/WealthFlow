@@ -11,16 +11,16 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public abstract class AssetMapper {
+public interface AssetMapper {
 
-    public abstract AssetResponseDto toResponse(Asset asset);
+    AssetResponseDto toResponse(Asset asset);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "lastPrice", ignore = true)
     @Mapping(target = "lastPriceAt", ignore = true)
-    public abstract Asset toEntity(AssetRequestDto assetRequestDto);
+    Asset toEntity(AssetRequestDto assetRequestDto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
@@ -28,5 +28,5 @@ public abstract class AssetMapper {
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "lastPrice", ignore = true)
     @Mapping(target = "lastPriceAt", ignore = true)
-    public abstract void updateFromDto(AssetRequestDto assetRequestDto, @MappingTarget Asset asset);
+    void updateFromDto(AssetRequestDto assetRequestDto, @MappingTarget Asset asset);
 }
