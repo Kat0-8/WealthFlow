@@ -52,10 +52,10 @@ public class NotificationRule {
     private BigDecimal targetPrice;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 10)
+    @Column(name = "direction", nullable = false, length = 10)
     private Direction direction;
 
-    @Column(nullable = false)
+    @Column(name = "enabled", nullable = false)
     private boolean enabled = true;
 
     @Column(name = "repeat_notification", nullable = false)

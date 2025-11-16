@@ -40,11 +40,11 @@ public class Asset {
     @Column(name = "ticker_symbol", unique = true, nullable = false, length = 50)
     private String tickerSymbol;
 
-    @Column(nullable = false, length = 255)
+    @Column(name = "name", nullable = false, length = 255)
     private String name;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
+    @Column(name = "type", nullable = false, length = 20)
     private Type type;
 
     @Column(name = "external_id", length = 255)
