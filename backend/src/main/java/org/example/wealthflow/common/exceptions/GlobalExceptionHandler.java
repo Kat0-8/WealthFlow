@@ -9,14 +9,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.time.Instant;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
@@ -47,25 +44,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<ErrorResponseDto> handleUnauthorized(UnauthorizedException ex, HttpServletRequest request) {
         return buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage(), request.getRequestURI());
-    }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponseDto> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex,
-                                                                                  HttpServletRequest request) {
-        Map<String, String> fieldErrors = ex.getBindingResult()
-                .getFieldErrors()
-                .stream()
-                .collect(Collectors.toMap(
-                        FieldError::getField,
-                        fe -> fe.getDefaultMessage() == null ? "invalid" : fe.getDefaultMessage(),
-                        (existing, replacement) -> existing
-                ));
-
-        String summary = fieldErrors.entrySet().stream()
-                .map(e -> e.getKey() + ": " + e.getValue())
-                .collect(Collectors.joining("; "));
-
-        return buildResponse(HttpStatus.BAD_REQUEST, "Validation failed: " + summary, request.getRequestURI());
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
